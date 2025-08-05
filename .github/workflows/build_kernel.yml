@@ -136,4 +136,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kernel-zip
-          path: out/kernel.zip
+          path: common/out/kernel.zip
