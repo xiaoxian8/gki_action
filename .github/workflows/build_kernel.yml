@@ -31,6 +31,8 @@ jobs:
           export DEFCONFIG_FILE=$PWD/arch/arm64/configs/gki_defconfig
           rm android/abi_gki_protected_exports_*
           sed -i 's/ -dirty//g' scripts/setlocalversion
+          echo ">>> 强制启用 ZRAM 功能"
+          sed -i 's/^CONFIG_ZRAM=m/CONFIG_ZRAM=y/' "$DEFCONFIG_FILE"
           curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-main
           git clone https://github.com/SukiSU-Ultra/SukiSU_patch.git --depth=1
           git clone https://github.com/xiaoxian8/ssg_patch.git --depth=1
