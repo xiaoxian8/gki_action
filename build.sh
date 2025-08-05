@@ -9,6 +9,8 @@ export DEFCONFIG_FILE=$PWD/arch/arm64/configs/gki_defconfig
 #删除无用的abi和内核后缀
 rm android/abi_gki_protected_exports_*
 sed -i 's/ -dirty//g' scripts/setlocalversion
+echo ">>> 强制启用 ZRAM 功能"
+sed -i 's/^CONFIG_ZRAM=m/CONFIG_ZRAM=y/' "$DEFCONFIG_FILE"
 
 echo ">>> 正在添加sukisu和susfs支持..."
 curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-main
