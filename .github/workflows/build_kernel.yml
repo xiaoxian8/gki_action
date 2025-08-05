@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git curl lz4 liblz4-tool device-tree-compiler zip unzip
+          sudo apt-get install -y git curl lz4 liblz4-tool device-tree-compiler zip unzip curl git make
 
       - name: Run kernel build script
         run: |
