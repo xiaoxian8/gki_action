@@ -45,6 +45,8 @@ jobs:
           cp SukiSU_patch/other/zram/lz4k_oplus ./lib -r
           cp susfs4ksu/kernel_patches/* ./ -r
           patch -p1 < susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch
+          echo ">>> 强制启用 ZRAM 功能"
+          sed -i 's/^CONFIG_ZRAM=m/CONFIG_ZRAM=y/' "$DEFCONFIG_FILE"
           cat >> "$DEFCONFIG_FILE" <<EOF
           CONFIG_LTO_CLANG=y
           CONFIG_ARCH_SUPPORTS_LTO_CLANG=y
@@ -52,7 +54,6 @@ jobs:
           CONFIG_HAS_LTO_CLANG=y
           CONFIG_LTO_CLANG_THIN=y
           CONFIG_LTO=y
-          CONFIG_ZRAM=y
           CONFIG_LOCALVERSION="-xiaoxian"
           CONFIG_KSU=y
           CONFIG_KSU_SUSFS=y
