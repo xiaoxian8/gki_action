@@ -40,7 +40,6 @@ jobs:
           cp ssg_patch/* ./ -r
           patch -p1 < ssg.patch
           patch -p1 < kernel_patches/syscall_hook/min_scope_syscall_hooks_v1.4.patch
-          patch -p1 < SukiSU_patch/69_hide_stuff.patch
           patch -p1 -F3 < SukiSU_patch/other/zram/zram_patch/6.1/lz4kd.patch
           patch -p1 -F3 < SukiSU_patch/other/zram/zram_patch/6.1/lz4k_oplus.patch
           cp SukiSU_patch/other/zram/lz4k/* ./ -r
