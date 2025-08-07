@@ -1,0 +1,137 @@
+name: kernelsu next构建
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: 构建内核
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 签出存储库
+        uses: actions/checkout@v4
+
+      - name: 安装依赖
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc bison build-essential cpio curl dwarves flex git libelf-dev libssl-dev lz4 make python3 rsync unzip wget xz-utils zstd
+          
+      - name: 开始构建内核
+        run: |
+          #!/usr/bin/env bash
+          git clone https://android.googlesource.com/kernel/common -b android14-6.1-2024-10 --depth=1
+          cd common
+          git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 -b android14-release --depth=1 llvm
+          git clone https://github.com/xiaoxian8/AnyKernel3.git --depth=1
+          export PATH=$PWD/llvm/clang-r487747c/bin:$PATH
+          export DEFCONFIG_FILE=$PWD/arch/arm64/configs/gki_defconfig
+          rm android/abi_gki_protected_exports_*
+          sed -i 's/ -dirty//g' scripts/setlocalversion
+          sed -i 's/^CONFIG_ZRAM=m/CONFIG_ZRAM=y/' "$DEFCONFIG_FILE"
+          curl -LSs "https://ghfast.top/https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s next-susfs-a13-5.15-dev
+          git clone https://github.com/SukiSU-Ultra/SukiSU_patch.git --depth=1
+          git clone https://github.com/xiaoxian8/ssg_patch.git --depth=1
+          git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android14-6.1 --depth=1
+          git clone https://github.com/KernelSU-Next/kernel_patches.git --depth=1
+          cp ssg_patch/* ./ -r
+          patch -p1 < ssg.patch
+          patch -p1 < kernel_patchs/syscall_hook/min_scope_syscall_hooks_v1.4.patch
+          patch -p1 < SukiSU_patch/69_hide_stuff.patch
+          patch -p1 -F3 < SukiSU_patch/other/zram/zram_patch/6.1/lz4kd.patch
+          patch -p1 -F3 < SukiSU_patch/other/zram/zram_patch/6.1/lz4k_oplus.patch
+          cp SukiSU_patch/other/zram/lz4k/* ./ -r
+          cp SukiSU_patch/other/zram/lz4k_oplus ./lib -r
+          cp susfs4ksu/kernel_patches/* ./ -r
+          patch -p1 < susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch
+          cat >> "$DEFCONFIG_FILE" <<EOF
+          CONFIG_LTO_CLANG=y
+          CONFIG_ARCH_SUPPORTS_LTO_CLANG=y
+          CONFIG_ARCH_SUPPORTS_LTO_CLANG_THIN=y
+          CONFIG_HAS_LTO_CLANG=y
+          CONFIG_LTO_CLANG_THIN=y
+          CONFIG_LTO=y
+          CONFIG_LOCALVERSION="-xiaoxian"
+          CONFIG_KSU=y
+          CONFIG_KSU_SUSFS=y
+          CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y
+          CONFIG_KSU_SUSFS_SUS_PATH=y
+          CONFIG_KSU_SUSFS_SUS_MOUNT=y
+          CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT=y
+          CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT=y
+          CONFIG_KSU_SUSFS_SUS_KSTAT=y
+          CONFIG_KSU_SUSFS_TRY_UMOUNT=y
+          CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT=y
+          CONFIG_KSU_SUSFS_SPOOF_UNAME=y
+          CONFIG_KSU_SUSFS_ENABLE_LOG=y
+          CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y
+          CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y
+          CONFIG_KSU_SUSFS_OPEN_REDIRECT=y
+          CONFIG_CRYPTO_LZ4K_OPLUS=y
+          CONFIG_ZSMALLOC=y
+          CONFIG_CRYPTO_LZ4HC=y
+          CONFIG_CRYPTO_LZ4K=y
+          CONFIG_CRYPTO_LZ4KD=y
+          CONFIG_CRYPTO_842=y
+          CONFIG_ZRAM_DEF_COMP_LZ4=y
+          CONFIG_ZRAM_DEF_COMP="lz4"
+          CONFIG_TCP_CONG_ADVANCED=y
+          CONFIG_TCP_CONG_BBR=y
+          CONFIG_TCP_CONG_CUBIC=y
+          CONFIG_TCP_CONG_VEGAS=y
+          CONFIG_TCP_CONG_NV=y
+          CONFIG_TCP_CONG_WESTWOOD=y
+          CONFIG_TCP_CONG_HTCP=y
+          CONFIG_TCP_CONG_BRUTAL=y
+          CONFIG_DEFAULT_TCP_CONG=bbr
+          CONFIG_MQ_IOSCHED_SSG=y
+          CONFIG_MQ_IOSCHED_SSG_CGROUP=y
+          CONFIG_BPF_STREAM_PARSER=y
+          CONFIG_NETFILTER_XT_MATCH_ADDRTYPE=y
+          CONFIG_NETFILTER_XT_SET=y
+          CONFIG_IP_SET=y
+          CONFIG_IP_SET_MAX=65534
+          CONFIG_IP_SET_BITMAP_IP=y
+          CONFIG_IP_SET_BITMAP_IPMAC=y
+          CONFIG_IP_SET_BITMAP_PORT=y
+          CONFIG_IP_SET_HASH_IP=y
+          CONFIG_IP_SET_HASH_IPMARK=y
+          CONFIG_IP_SET_HASH_IPPORT=y
+          CONFIG_IP_SET_HASH_IPPORTIP=y
+          CONFIG_IP_SET_HASH_IPPORTNET=y
+          CONFIG_IP_SET_HASH_IPMAC=y
+          CONFIG_IP_SET_HASH_MAC=y
+          CONFIG_IP_SET_HASH_NETPORTNET=y
+          CONFIG_IP_SET_HASH_NET=y
+          CONFIG_IP_SET_HASH_NETNET=y
+          CONFIG_IP_SET_HASH_NETPORT=y
+          CONFIG_IP_SET_HASH_NETIFACE=y
+          CONFIG_IP_SET_LIST_SET=y
+          CONFIG_IP6_NF_NAT=y
+          CONFIG_IP6_NF_TARGET_MASQUERADE=y
+          EOF
+          echo "CONFIG_KSU_KPROBES_HOOK=y" >> "$DEFCONFIG_FILE"
+          echo "CONFIG_KSU_MANUAL_HOOK=y" >> "$DEFCONFIG_FILE"
+          echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> "$DEFCONFIG_FILE"
+          echo "CONFIG_KPM=y" >> "$DEFCONFIG_FILE"
+          args=(-j$(nproc --all) O=out ARCH=arm64 LLVM=1 DEPMOD=depmod DTC=dtc)
+          make "${args[@]}" mrproper
+          make "${args[@]}" gki_defconfig
+          make "${args[@]}" Image.lz4 modules
+          make "${args[@]}" INSTALL_MOD_PATH=modules modules_install
+          chmod +x SukiSU_patch/kpm/patch_linux
+          cp $(find out -type f -name "Image") ./AnyKernel3
+          cd AnyKernel3
+          zip -r9v ../out/kernel.zip *
+          rm Image ../Image
+          cd ../
+          git checkout --ours .
+
+      - name: 上传内核文件
+        uses: actions/upload-artifact@v4
+        with:
+          name: kernel-zip
+          path: common/out/kernel.zip
