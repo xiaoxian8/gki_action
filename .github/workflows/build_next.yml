@@ -121,11 +121,9 @@ jobs:
           make "${args[@]}" gki_defconfig
           make "${args[@]}" Image.lz4 modules
           make "${args[@]}" INSTALL_MOD_PATH=modules modules_install
-          chmod +x SukiSU_patch/kpm/patch_linux
-          cp $(find out -type f -name "Image") ./AnyKernel3
+          cp out/arch/arm64/boot/Image ./AnyKernel3/
           cd AnyKernel3
           zip -r9v ../out/kernel.zip *
-          rm Image ../Image
           cd ../
           git checkout --ours .
 
