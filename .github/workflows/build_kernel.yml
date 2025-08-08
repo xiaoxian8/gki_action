@@ -25,7 +25,6 @@ jobs:
           #!/usr/bin/env bash
           git clone https://android.googlesource.com/kernel/common -b android14-6.1-2024-10 --depth=1
           cd common
-          git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 -b android14-release --depth=1 llvm
           git clone https://github.com/xiaoxian8/AnyKernel3.git --depth=1
           wget https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.8/LLVM-20.1.8-Linux-X64.tar.xz
           tar -xvf LLVM-20.1.8-Linux-X64.tar.xz
