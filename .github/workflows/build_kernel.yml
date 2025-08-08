@@ -1,4 +1,4 @@
-name: GKI内核构建
+name: SukiSU内核构建
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
       - name: 安装依赖
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential cpio curl dwarves flex git libelf-dev libssl-dev lz4 make python3 rsync unzip wget xz-utils zstd
+          sudo apt-get install -y bc bison build-essential cpio curl dwarves flex git libelf-dev libssl-dev lz4 make python3 rsync unzip wget xz-utils zstd llvm clang
           
       - name: 开始构建内核
         run: |
@@ -27,7 +27,6 @@ jobs:
           cd common
           git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 -b android14-release --depth=1 llvm
           git clone https://github.com/xiaoxian8/AnyKernel3.git --depth=1
-          export PATH=$PWD/llvm/clang-r487747c/bin:$PATH
           export DEFCONFIG_FILE=$PWD/arch/arm64/configs/gki_defconfig
           rm android/abi_gki_protected_exports_*
           sed -i 's/ -dirty//g' scripts/setlocalversion
