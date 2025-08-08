@@ -18,7 +18,7 @@ jobs:
       - name: 安装依赖
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential cpio curl dwarves flex git libelf-dev libssl-dev lz4 make python3 rsync unzip wget xz-utils zstd llvm clang
+          sudo apt-get install -y bc bison build-essential cpio curl dwarves flex git libelf-dev libssl-dev lz4 make python3 rsync unzip wget xz-utils zstd llvm clang lld
           
       - name: 开始构建内核
         run: |
