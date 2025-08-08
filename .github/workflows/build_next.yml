@@ -1,4 +1,4 @@
-name: kernelsu next构建
+name: KernelSUnext构建
 
 on:
   push:
