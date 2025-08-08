@@ -1,4 +1,4 @@
-name: KernelSUnext构建
+name: KernelSUnext内核构建
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
           rm android/abi_gki_protected_exports_*
           sed -i 's/ -dirty//g' scripts/setlocalversion
           sed -i 's/^CONFIG_ZRAM=m/CONFIG_ZRAM=y/' "$DEFCONFIG_FILE"
-          curl -LSs "https://ghfast.top/https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s next-susfs-a13-5.15-dev
+          curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s next-susfs-a13-5.15-dev
           git clone https://github.com/SukiSU-Ultra/SukiSU_patch.git --depth=1
           git clone https://github.com/xiaoxian8/ssg_patch.git --depth=1
           git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android14-6.1 --depth=1
