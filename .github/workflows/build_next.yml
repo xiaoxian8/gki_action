@@ -18,7 +18,7 @@ jobs:
       - name: 安装依赖
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential cpio curl dwarves flex git libelf-dev libssl-dev lz4 make python3 rsync unzip wget xz-utils zstd llvm clang lld
+          sudo apt-get install -y bc bison build-essential cpio curl dwarves flex git libelf-dev libssl-dev lz4 make python3 rsync unzip wget xz-utils zstd
           
       - name: 开始构建内核
         run: |
@@ -26,7 +26,9 @@ jobs:
           git clone https://android.googlesource.com/kernel/common -b android14-6.1-2024-10 --depth=1
           cd common
           git clone https://github.com/xiaoxian8/AnyKernel3.git --depth=1
-          export PATH=$PWD/llvm/clang-r487747c/bin:$PATH
+          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.8/LLVM-20.1.8-Linux-X64.tar.xz
+          tar -cvf LLVM-20.1.8-Linux-X64.tar.xz
+          export PATH=$PWD/LLVM-20.1.8-Linux-X64/bin:$PATH
           export DEFCONFIG_FILE=$PWD/arch/arm64/configs/gki_defconfig
           rm android/abi_gki_protected_exports_*
           sed -i 's/ -dirty//g' scripts/setlocalversion
