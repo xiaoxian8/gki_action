@@ -27,7 +27,7 @@ jobs:
           cd common
           git clone https://github.com/xiaoxian8/AnyKernel3.git --depth=1
           wget https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.8/LLVM-20.1.8-Linux-X64.tar.xz
-          tar -cvf LLVM-20.1.8-Linux-X64.tar.xz
+          tar -xvf LLVM-20.1.8-Linux-X64.tar.xz
           export PATH=$PWD/LLVM-20.1.8-Linux-X64/bin:$PATH
           export DEFCONFIG_FILE=$PWD/arch/arm64/configs/gki_defconfig
           rm android/abi_gki_protected_exports_*
