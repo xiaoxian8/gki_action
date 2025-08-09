@@ -116,7 +116,6 @@ jobs:
           echo "CONFIG_KSU_KPROBES_HOOK=y" >> "$DEFCONFIG_FILE"
           echo "CONFIG_KSU_MANUAL_HOOK=y" >> "$DEFCONFIG_FILE"
           echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> "$DEFCONFIG_FILE"
-          echo "CONFIG_KPM=y" >> "$DEFCONFIG_FILE"
           args=(-j$(nproc --all) O=out ARCH=arm64 LLVM=1 DEPMOD=depmod DTC=dtc)
           make "${args[@]}" mrproper
           make "${args[@]}" gki_defconfig
