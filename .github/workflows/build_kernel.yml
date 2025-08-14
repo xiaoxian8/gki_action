@@ -113,7 +113,7 @@ jobs:
           CONFIG_IP6_NF_NAT=y
           CONFIG_IP6_NF_TARGET_MASQUERADE=y
           EOF
-          echo "CONFIG_KSU_KPROBES_HOOK=y" >> "$DEFCONFIG_FILE"
+          echo "CONFIG_KSU_KPROBES_HOOK=n" >> "$DEFCONFIG_FILE"
           echo "CONFIG_KSU_MANUAL_HOOK=y" >> "$DEFCONFIG_FILE"
           echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> "$DEFCONFIG_FILE"
           echo "CONFIG_KPM=y" >> "$DEFCONFIG_FILE"
