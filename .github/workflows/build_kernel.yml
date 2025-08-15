@@ -39,15 +39,14 @@ jobs:
           git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android14-6.1 --depth=1
           cp ssg_patch/* ./ -r
           patch -p1 < ssg.patch
-          #patch -p1 < SukiSU_patch/hooks/syscall_hooks.patch
+          patch -p1 < SukiSU_patch/hooks/syscall_hooks.patch
+          patch -p1 < SukiSU_patch/69_hide_stuff.patch
           patch -p1 -F3 < SukiSU_patch/other/zram/zram_patch/6.1/lz4kd.patch
           patch -p1 -F3 < SukiSU_patch/other/zram/zram_patch/6.1/lz4k_oplus.patch
           cp SukiSU_patch/other/zram/lz4k/* ./ -r
           cp SukiSU_patch/other/zram/lz4k_oplus ./lib -r
           cp susfs4ksu/kernel_patches/* ./ -r
           patch -p1 -F3 < susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch
-          patch -p1 -F3 < sukisu_tracepoint_hooks.patch
-          patch -p1 < SukiSU_patch/69_hide_stuff.patch
           cat >> "$DEFCONFIG_FILE" <<EOF
           CONFIG_LTO_CLANG=y
           CONFIG_ARCH_SUPPORTS_LTO_CLANG=y
