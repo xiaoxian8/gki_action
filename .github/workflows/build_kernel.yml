@@ -46,7 +46,7 @@ jobs:
           cp SukiSU_patch/other/zram/lz4k/* ./ -r
           cp SukiSU_patch/other/zram/lz4k_oplus ./lib -r
           cp susfs4ksu/kernel_patches/* ./ -r
-          patch -p1 -F3 < susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch
+          patch -p1 < susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch
           cat >> "$DEFCONFIG_FILE" <<EOF
           CONFIG_LTO_CLANG=y
           CONFIG_ARCH_SUPPORTS_LTO_CLANG=y
