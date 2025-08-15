@@ -39,7 +39,7 @@ jobs:
           git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android14-6.1 --depth=1
           cp ssg_patch/* ./ -r
           patch -p1 < ssg.patch
-          patch -p1 < sukisu_tracepoint_hooks.patch
+          patch -p1 -F3 < sukisu_tracepoint_hooks.patch
           #patch -p1 < SukiSU_patch/hooks/syscall_hooks.patch
           patch -p1 < SukiSU_patch/69_hide_stuff.patch
           patch -p1 -F3 < SukiSU_patch/other/zram/zram_patch/6.1/lz4kd.patch
