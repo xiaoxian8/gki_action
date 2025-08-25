@@ -94,9 +94,3 @@ jobs:
         run: |
           chmod +x ./locals/build.sh
           ./locals/build.sh
-          
-      - name: Upload kernel build
-        uses: actions/upload-artifact@v3
-         with:
-         name: AnyKernel3-zip
-         path: out/AnyKernel3.zip
