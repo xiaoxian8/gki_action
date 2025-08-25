@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       gki_dev:
-        description: '选择内核分支 (e.g., android12-5.10.3)'
+        description: '选择内核分支 (例如:android14-6.1-2024-10)'
         required: true
-        default: 'android12-6.1'
+        default: 'android14-6.1-2024-10'
       ksu_branch:
         description: '选择 KernelSU 类型'
         required: true
@@ -60,7 +60,7 @@ jobs:
 
       - name: Determine build script
         run: |
-          if [[ "$GKI_VERSION" == 5.* ]]; then
+          if [[ "$GKI_VERSION" == android12-5.10* ]]; then
             echo "BUILD_SCRIPT=locals/build-5.10.sh" >> $GITHUB_ENV
           else
             echo "BUILD_SCRIPT=locals/build.sh" >> $GITHUB_ENV
