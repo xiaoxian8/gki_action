@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       GKI_DEV:
-        description: 'GKI 内核分支，例如 android12-6.1'
+        description: 'GKI 内核分支，例如 android14-6.1-2024-10'
         required: true
-        default: 'android12-6.1'
+        default: 'android14-6.1-2024-10'
       KSU_BRANCH:
         description: '选择 KernelSU 分支'
         required: true
