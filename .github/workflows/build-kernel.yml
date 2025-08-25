@@ -96,7 +96,7 @@ jobs:
           ./locals/build.sh
           
       - name: Upload kernel build
-        uses: actions/upload-artifact@v4
-        with:
-        name: AnyKernel3-zip
-        path: out/AnyKernel3.zip
+        uses: actions/upload-artifact@v3
+         with:
+         name: AnyKernel3-zip
+         path: out/AnyKernel3.zip
