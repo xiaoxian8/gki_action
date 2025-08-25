@@ -2,7 +2,7 @@
 
 #下载LLVM环境
 wget -nv https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.8/LLVM-20.1.8-Linux-X64.tar.xz
-tar -Jxvf LLVM-20.1.8-Linux-X64.tar.xz 
+tar -Jxf LLVM-20.1.8-Linux-X64.tar.xz 
 
 #下载源码
 git clone https://android.googlesource.com/kernel/common -b $GKI_DEV --depth=1
