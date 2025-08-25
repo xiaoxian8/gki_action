@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 
-#安装依赖
-sudo apt-get update
-sudo apt-get install curl bison flex make binutils dwarves git lld pahole zip perl make gcc python3 python-is-python3 bc libssl-dev libelf-dev -y
-
 #下载LLVM环境
 wget -nv https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.8/LLVM-20.1.8-Linux-X64.tar.xz
-tar -Jxf LLVM-20.1.8-Linux-X64.tar.xz --strip-components=1
+tar -Jxvf LLVM-20.1.8-Linux-X64.tar.xz 
+
 #下载源码
 git clone https://android.googlesource.com/kernel/common -b $GKI_DEV --depth=1
 cd common
