@@ -85,7 +85,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo wget https://apt.llvm.org/llvm.sh
+          sudo apt-get install curl bison flex make binutils dwarves git lld pahole zip perl make gcc python3 python-is-python3 bc libssl-dev libelf-dev -y
           
       - name: Make output directory
         run: mkdir -p out
