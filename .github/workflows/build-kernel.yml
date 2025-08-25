@@ -46,19 +46,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 检查储存库
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Set GKI_VERSION dynamically
+      - name: 设置GKI版本分支
         run: |
           version=$(echo "${{ github.event.inputs.gki_dev }}" | grep -oP '\d+\.\d+(\.\d+)?')
           echo "GKI_VERSION=$version" >> $GITHUB_ENV
           echo "GKI_DEV=${{ github.event.inputs.gki_dev }}" >> $GITHUB_ENV
           echo "Detected GKI_VERSION: $version"
 
-      - name: Determine build script
+      - name: 选择构建脚本
         run: |
           if [[ "$GKI_VERSION" == android12-5.10* ]]; then
             echo "BUILD_SCRIPT=locals/build-5.10.sh" >> $GITHUB_ENV
@@ -67,7 +67,7 @@ jobs:
           fi
           echo "Selected build script: $BUILD_SCRIPT"
 
-      - name: Set feature flags
+      - name: 设置功能标志
         run: |
           echo "SUKI_SU_BRANCH=${{ github.event.inputs.ksu_branch }}" >> $GITHUB_ENV
           echo "SSG=${{ github.event.inputs.ssg }}" >> $GITHUB_ENV
@@ -76,7 +76,7 @@ jobs:
           echo "KPM=${{ github.event.inputs.kpm }}" >> $GITHUB_ENV
           echo "BBR=${{ github.event.inputs.bbr }}" >> $GITHUB_ENV
 
-      - name: Run build script
+      - name: 开始编译
         run: |
           chmod +x $BUILD_SCRIPT
           ./$BUILD_SCRIPT
