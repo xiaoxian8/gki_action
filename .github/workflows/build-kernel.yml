@@ -1,91 +1,67 @@
-name: GKI内核构建
+name: Build Android GKI Kernel
 
 on:
   workflow_dispatch:
     inputs:
-      gki_dev:
-        description: '选择内核分支 (例如:android14-6.1-2024-10)'
+      GKI_DEV:
+        description: 'GKI 内核分支，例如 android12-6.1'
         required: true
-        default: 'android14-6.1-2024-10'
-      ksu_branch:
-        description: '选择 KernelSU 类型'
+        default: 'android12-6.1'
+      KSU_BRANCH:
+        description: 'SukiSU Ultra (y) 或 KernelSU Next (n)'
         required: true
-        type: choice
-        options:
-          - 'SukiSU Ultra'
-          - 'KernelSU Next'
-        default: 'KernelSU Next'
-      ssg:
-        description: '启用 SSG?'
+        default: 'y'
+      APPLY_SUSFS:
+        description: '是否启用 SUSFS (y/n)'
         required: true
-        type: boolean
-        default: false
-      lz4kd:
-        description: '启用 LZ4KD?'
+        default: 'y'
+      APPLY_LZ4KD:
+        description: '是否启用 LZ4KD (y/n)'
         required: true
-        type: boolean
-        default: false
-      susfs:
-        description: '启用 SUSFS?'
+        default: 'y'
+      APPLY_KPROBES:
+        description: '是否启用 KPROBES (y/n)'
         required: true
-        type: boolean
-        default: false
-      kpm:
-        description: '启用 KPM?'
+        default: 'y'
+      USE_PATCH_LINUX:
+        description: '是否启用 KPM Patch (y/n)'
         required: true
-        type: boolean
-        default: false
-      bbr:
-        description: '启用 BBR?'
+        default: 'n'
+      APPLY_BBR:
+        description: '是否启用 BBR 拥塞控制 (y/n/d)'
         required: true
-        type: boolean
-        default: false
+        default: 'n'
+      APPLY_SSG:
+        description: '是否启用 SSG IO 调度器 (y/n)'
+        required: true
+        default: 'n'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GKI_DEV: ${{ github.event.inputs.GKI_DEV }}
+      KSU_BRANCH: ${{ github.event.inputs.KSU_BRANCH }}
+      APPLY_SUSFS: ${{ github.event.inputs.APPLY_SUSFS }}
+      APPLY_LZ4KD: ${{ github.event.inputs.APPLY_LZ4KD }}
+      APPLY_KPROBES: ${{ github.event.inputs.APPLY_KPROBES }}
+      USE_PATCH_LINUX: ${{ github.event.inputs.USE_PATCH_LINUX }}
+      APPLY_BBR: ${{ github.event.inputs.APPLY_BBR }}
+      APPLY_SSG: ${{ github.event.inputs.APPLY_SSG }}
 
     steps:
-      - name: 检查储存库
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: 设置GKI版本分支
+      - name: Install dependencies
         run: |
-          version=$(echo "${{ github.event.inputs.gki_dev }}" | grep -oP '\d+\.\d+(\.\d+)?')
-          echo "GKI_VERSION=$version" >> $GITHUB_ENV
-          echo "GKI_DEV=${{ github.event.inputs.gki_dev }}" >> $GITHUB_ENV
-          echo "Detected GKI_VERSION: $version"
+          sudo apt update
+          sudo apt install -y wget zip unzip curl git build-essential bc libncurses5 libncurses5-dev
 
-      - name: 选择构建脚本
-        run: |
-          if [[ "$GKI_VERSION" == android12-5.10* ]]; then
-            echo "BUILD_SCRIPT=locals/build-5.10.sh" >> $GITHUB_ENV
-          else
-            echo "BUILD_SCRIPT=locals/build.sh" >> $GITHUB_ENV
-          fi
-          echo "Selected build script: $BUILD_SCRIPT"
+      - name: Make output directory
+        run: mkdir -p out
 
-      - name: 设置功能标志
+      - name: Run build script
         run: |
-          echo "SUKI_SU_BRANCH=${{ github.event.inputs.ksu_branch }}" >> $GITHUB_ENV
-          echo "SSG=${{ github.event.inputs.ssg }}" >> $GITHUB_ENV
-          echo "LZ4KD=${{ github.event.inputs.lz4kd }}" >> $GITHUB_ENV
-          echo "SUSFS=${{ github.event.inputs.susfs }}" >> $GITHUB_ENV
-          echo "KPM=${{ github.event.inputs.kpm }}" >> $GITHUB_ENV
-          echo "BBR=${{ github.event.inputs.bbr }}" >> $GITHUB_ENV
-
-      - name: 开始编译
-        run: |
-          chmod +x $BUILD_SCRIPT
-          ./$BUILD_SCRIPT
-        env:
-          GKI_DEV: ${{ env.GKI_DEV }}
-          GKI_VERSION: ${{ env.GKI_VERSION }}
-          SUKI_SU_BRANCH: ${{ env.SUKI_SU_BRANCH }}
-          SSG: ${{ env.SSG }}
-          LZ4KD: ${{ env.LZ4KD }}
-          SUSFS: ${{ env.SUSFS }}
-          KPM: ${{ env.KPM }}
-          BBR: ${{ env.BBR }}
+          chmod +x ./locals/build.sh
+          ./locals/build.sh
