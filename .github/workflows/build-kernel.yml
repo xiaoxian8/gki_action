@@ -1,1 +1,91 @@
-1
+name: Kernel Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      gki_dev:
+        description: '选择内核分支 (e.g., android12-5.10.3)'
+        required: true
+        default: 'android12-6.1'
+      ksu_branch:
+        description: '选择 KernelSU 类型'
+        required: true
+        type: choice
+        options:
+          - 'SukiSU Ultra'
+          - 'KernelSU Next'
+        default: 'KernelSU Next'
+      ssg:
+        description: '启用 SSG?'
+        required: true
+        type: boolean
+        default: false
+      lz4kd:
+        description: '启用 LZ4KD?'
+        required: true
+        type: boolean
+        default: false
+      susfs:
+        description: '启用 SUSFS?'
+        required: true
+        type: boolean
+        default: false
+      kpm:
+        description: '启用 KPM?'
+        required: true
+        type: boolean
+        default: false
+      bbr:
+        description: '启用 BBR?'
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set GKI_VERSION dynamically
+        run: |
+          version=$(echo "${{ github.event.inputs.gki_dev }}" | grep -oP '\d+\.\d+(\.\d+)?')
+          echo "GKI_VERSION=$version" >> $GITHUB_ENV
+          echo "GKI_DEV=${{ github.event.inputs.gki_dev }}" >> $GITHUB_ENV
+          echo "Detected GKI_VERSION: $version"
+
+      - name: Determine build script
+        run: |
+          if [[ "$GKI_VERSION" == 5.* ]]; then
+            echo "BUILD_SCRIPT=locals/build-5.10.sh" >> $GITHUB_ENV
+          else
+            echo "BUILD_SCRIPT=locals/build.sh" >> $GITHUB_ENV
+          fi
+          echo "Selected build script: $BUILD_SCRIPT"
+
+      - name: Set feature flags
+        run: |
+          echo "SUKI_SU_BRANCH=${{ github.event.inputs.ksu_branch }}" >> $GITHUB_ENV
+          echo "SSG=${{ github.event.inputs.ssg }}" >> $GITHUB_ENV
+          echo "LZ4KD=${{ github.event.inputs.lz4kd }}" >> $GITHUB_ENV
+          echo "SUSFS=${{ github.event.inputs.susfs }}" >> $GITHUB_ENV
+          echo "KPM=${{ github.event.inputs.kpm }}" >> $GITHUB_ENV
+          echo "BBR=${{ github.event.inputs.bbr }}" >> $GITHUB_ENV
+
+      - name: Run build script
+        run: |
+          chmod +x $BUILD_SCRIPT
+          ./$BUILD_SCRIPT
+        env:
+          GKI_DEV: ${{ env.GKI_DEV }}
+          GKI_VERSION: ${{ env.GKI_VERSION }}
+          SUKI_SU_BRANCH: ${{ env.SUKI_SU_BRANCH }}
+          SSG: ${{ env.SSG }}
+          LZ4KD: ${{ env.LZ4KD }}
+          SUSFS: ${{ env.SUSFS }}
+          KPM: ${{ env.KPM }}
+          BBR: ${{ env.BBR }}
