@@ -8,33 +8,62 @@ on:
         required: true
         default: 'android12-6.1'
       KSU_BRANCH:
-        description: 'SukiSU Ultra (y) 或 KernelSU Next (n)'
+        description: '选择 KernelSU 分支'
         required: true
         default: 'y'
+        type: choice
+        options:
+          - y
+          - n
       APPLY_SUSFS:
-        description: '是否启用 SUSFS (y/n)'
+        description: '是否启用 SUSFS'
         required: true
         default: 'y'
+        type: choice
+        options:
+          - y
+          - n
       APPLY_LZ4KD:
-        description: '是否启用 LZ4KD (y/n)'
+        description: '是否启用 LZ4KD'
         required: true
         default: 'y'
+        type: choice
+        options:
+          - y
+          - n
       APPLY_KPROBES:
-        description: '是否启用 KPROBES (y/n)'
+        description: '是否启用 KPROBES'
         required: true
         default: 'y'
+        type: choice
+        options:
+          - y
+          - n
       USE_PATCH_LINUX:
-        description: '是否启用 KPM Patch (y/n)'
+        description: '是否启用 KPM Patch'
         required: true
         default: 'n'
+        type: choice
+        options:
+          - y
+          - n
       APPLY_BBR:
-        description: '是否启用 BBR 拥塞控制 (y/n/d)'
+        description: '是否启用 BBR 拥塞控制'
         required: true
         default: 'n'
+        type: choice
+        options:
+          - y
+          - n
+          - d
       APPLY_SSG:
-        description: '是否启用 SSG IO 调度器 (y/n)'
+        description: '是否启用 SSG IO 调度器'
         required: true
         default: 'n'
+        type: choice
+        options:
+          - y
+          - n
 
 jobs:
   build:
@@ -56,8 +85,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y wget zip unzip curl git build-essential bc libncurses5 libncurses5-dev
-
+          sudo wget https://apt.llvm.org/llvm.sh
+          
       - name: Make output directory
         run: mkdir -p out
 
